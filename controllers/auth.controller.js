@@ -17,12 +17,14 @@ export const signup = async (req, res) => {
     if (user)
       return res
         .status(400)
-        .json({ error: "Email or phone number already exists" });
+        .json({
+          error: "Електронна пошта або номер телефону вже використовуєть!",
+        });
 
     if (password.length < 8)
       return res
         .status(400)
-        .json({ error: "Password must be at least 8 characters" });
+        .json({ error: "Пароль має бути не менше 8 символів!" });
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -66,9 +68,10 @@ export const login = async (req, res) => {
       user?.password || "",
     );
 
-    if (!user || !isPasswordCorrect) {
-      return res.status(400).json({ error: "Invalid email or password" });
-    }
+    if (!user || !isPasswordCorrect)
+      return res
+        .status(400)
+        .json({ error: "Неправильна адреса електронної пошти або пароль!" });
 
     generateToken(user._id, res);
 
