@@ -4,7 +4,7 @@ import { generateToken } from "../utils/token.js";
 
 export const signup = async (req, res) => {
   try {
-    const { name, surname, email, phone_number, password, role } = req.body;
+    const { name, surname, email, phone_number, password } = req.body;
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
@@ -34,7 +34,6 @@ export const signup = async (req, res) => {
       email,
       phone_number,
       password: hashedPassword,
-      role,
     });
 
     if (newUser) {
@@ -47,7 +46,6 @@ export const signup = async (req, res) => {
         surname: newUser.surname,
         email: newUser.email,
         phone_number: newUser.phone_number,
-        role: newUser.role,
       });
     } else {
       res.status(400).json({ error: "Invalid user data" });
@@ -81,7 +79,6 @@ export const login = async (req, res) => {
       surname: user.surname,
       email: user.email,
       phone_number: user.phone_number,
-      role: user.role,
     });
   } catch (error) {
     console.error(`Error in [login] controller: ${error.message}`);
