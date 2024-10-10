@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import connectMongoDB from "./db/connectMongoDB.js";
 import authRoute from "./routes/auth.route.js";
@@ -11,6 +12,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 7000;
 
+app.use(cors({ origin: "http://localhost:3000" }));
 app.get("/", (req, res) => {
   res.send("Server is working...");
 });
