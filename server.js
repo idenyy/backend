@@ -24,7 +24,7 @@ app.use(
       "https://tattoo-shop-801cb78430a8.herokuapp.com",
       "https://k3nxxx.github.io/react-tattoo-shop",
     ],
-    credentials: true, // Якщо використовуєте cookie
+    credentials: true,
   }),
 );
 
