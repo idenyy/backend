@@ -65,3 +65,48 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+export const addFavoriteProduct = async (req, res) => {
+  const userId = req.user._id;
+  const { productId } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (user.favorites.includes(productId)) {
+      return res.status(400).json({ message: "Product already in favorites" });
+    }
+
+    user.favorites.push(productId);
+    await user.save();
+
+    return res.status(200).json({ message: "Product added to favorites" });
+  } catch (error) {
+    console.error(`Error in [addFavoriteProduct] controller: ${error.message}`);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const removeFavoriteProduct = async (req, res) => {
+  const userId = req.user._id;
+  const { productId } = req.query;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.favorites = user.favorites.filter(
+      (favProductId) => favProductId.toString() !== productId,
+    );
+
+    await user.save();
+
+    return res.status(200).json({ message: "Product removed from favorites" });
+  } catch (error) {
+    console.error(
+      `Error in [removeFavoriteProduct] controller: ${error.message}`,
+    );
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

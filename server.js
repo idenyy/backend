@@ -12,14 +12,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 7000;
 
-app.use(cors({ origin: "http://localhost:3000" }));
-app.get("/", (req, res) => {
-  res.send("Server is working...");
-});
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors({ origin: "http://localhost:3000" }));
+
+app.get("/", (req, res) => {
+  res.send("Server is working...");
+});
 
 app.use("/auth", authRoute);
 app.use("/user", userRoute);
