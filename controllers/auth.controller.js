@@ -1,6 +1,8 @@
-import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/token.js";
+
+import User from "../models/user.model.js";
+import Admin from "../models/admin.model.js";
 
 export const signup = async (req, res) => {
   try {
@@ -37,10 +39,11 @@ export const signup = async (req, res) => {
     });
 
     if (newUser) {
-      generateToken(newUser._id, res);
+      const token = generateToken(newUser._id, res);
       await newUser.save();
 
       res.status(201).json({
+        token,
         _id: newUser._id,
         name: newUser.name,
         surname: newUser.surname,
@@ -57,32 +60,77 @@ export const signup = async (req, res) => {
   }
 };
 
+// export const login = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+//
+//     const user = await User.findOne({ email });
+//
+//     const isPasswordCorrect = await bcrypt.compare(
+//       password,
+//       user?.password || "",
+//     );
+//
+//     if (!user || !isPasswordCorrect)
+//       return res
+//         .status(400)
+//         .json({ error: "Неправильна адреса електронної пошти або пароль!" });
+//
+//     generateToken(user._id, res);
+//
+//     res.status(200).json({
+//       _id: user._id,
+//       name: user.name,
+//       surname: user.surname,
+//       email: user.email,
+//       phone_number: user.phone_number,
+//       role: user.role,
+//     });
+//   } catch (error) {
+//     console.error(`Error in [login] controller: ${error.message}`);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, email, password } = req.body;
 
     const user = await User.findOne({ email });
+    const admin = await Admin.findOne({ username });
 
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      user?.password || "",
-    );
+    const isUserPasswordCorrect = user
+      ? await bcrypt.compare(password, user.password)
+      : false;
+    const isAdminPasswordCorrect = admin
+      ? await bcrypt.compare(password, admin.password)
+      : false;
 
-    if (!user || !isPasswordCorrect)
-      return res
-        .status(400)
-        .json({ error: "Неправильна адреса електронної пошти або пароль!" });
+    if (user && isUserPasswordCorrect) {
+      const token = generateToken(user._id, res);
 
-    generateToken(user._id, res);
+      return res.status(200).json({
+        token,
+        _id: user._id,
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        phone_number: user.phone_number,
+        role: user.role,
+      });
+    }
 
-    res.status(200).json({
-      _id: user._id,
-      name: user.name,
-      surname: user.surname,
-      email: user.email,
-      phone_number: user.phone_number,
-      role: user.role,
-    });
+    if (admin && isAdminPasswordCorrect) {
+      const token = generateToken(admin._id, res);
+
+      return res.status(200).json({
+        _id: admin._id,
+        username: admin.username,
+        role: admin.role,
+      });
+    }
+
+    return res.status(400).json({ error: "Неправильний логін або пароль!" });
   } catch (error) {
     console.error(`Error in [login] controller: ${error.message}`);
     res.status(500).json({ error: "Internal Server Error" });

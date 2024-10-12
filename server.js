@@ -6,6 +6,8 @@ import cors from "cors";
 import connectMongoDB from "./db/connectMongoDB.js";
 import authRoute from "./routes/auth.route.js";
 import userRoute from "./routes/user.route.js";
+import adminRoute from "./routes/admin.route.js";
+import productRoute from "./routes/product.route.js";
 
 dotenv.config();
 
@@ -23,6 +25,8 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRoute);
 app.use("/user", userRoute);
+app.use("/admin", adminRoute);
+app.use("/products", productRoute);
 
 app.listen(PORT, () => {
   connectMongoDB();
