@@ -17,7 +17,16 @@ const PORT = process.env.PORT || 7000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({ origin: "http://localhost:3000" }));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://tattoo-shop-801cb78430a8.herokuapp.com",
+      "https://k3nxxx.github.io/react-tattoo-shop",
+    ],
+    credentials: true, // Якщо використовуєте cookie
+  }),
+);
 
 app.get("/", (req, res) => {
   res.send("Server is working...");
