@@ -121,9 +121,10 @@ export const login = async (req, res) => {
     }
 
     if (admin && isAdminPasswordCorrect) {
-      generateToken(admin._id, res);
+      const token = generateToken(admin._id, res);
 
       return res.status(200).json({
+        token,
         _id: admin._id,
         email: admin.email,
         role: admin.role,
