@@ -13,12 +13,12 @@ export const getAllAdmins = async (req, res) => {
 };
 
 export const createAdmin = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newAdmin = new Admin({
-      username,
+      email,
       password: hashedPassword,
       role: "admin",
     });
@@ -27,7 +27,8 @@ export const createAdmin = async (req, res) => {
       await newAdmin.save();
       generateToken(newAdmin._id, res);
       return res.status(201).json({
-        username: newAdmin.username,
+        _id: newAdmin._id,
+        email: newAdmin.email,
         role: newAdmin.role,
         message: "Admin created successfully",
       });

@@ -94,10 +94,10 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    const admin = await Admin.findOne({ username });
+    const admin = await Admin.findOne({ email });
 
     const isUserPasswordCorrect = user
       ? await bcrypt.compare(password, user.password)
@@ -121,11 +121,11 @@ export const login = async (req, res) => {
     }
 
     if (admin && isAdminPasswordCorrect) {
-      const token = generateToken(admin._id, res);
+      generateToken(admin._id, res);
 
       return res.status(200).json({
         _id: admin._id,
-        username: admin.username,
+        email: admin.email,
         role: admin.role,
       });
     }
