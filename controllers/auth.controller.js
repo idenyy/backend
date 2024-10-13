@@ -149,12 +149,23 @@ export const logout = async (req, res) => {
 
 export const authCheck = async (req, res) => {
   try {
-    const token = generateToken(user._id, res);
+    const admin = await Admin.findById(req.user._id).select("-password");
+
+    if (admin) {
+      const token = generateToken(admin._id, res);
+      return res.status(200).json({ token, admin: admin });
+    }
 
     const user = await User.findById(req.user._id).select("-password");
-    res.status(200).json({ token, user });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const token = generateToken(user._id, res);
+    return res.status(200).json({ token, user });
   } catch (error) {
-    console.error(`Error in [getMe] controller: ${error.message}`);
+    console.error(`Error in [authCheck] controller: ${error.message}`);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
