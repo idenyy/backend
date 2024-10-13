@@ -4,7 +4,7 @@ import { generateToken } from "../utils/token.js";
 
 export const getAllAdmins = async (req, res) => {
   try {
-    const admins = await Admin.find();
+    const admins = await Admin.find().select("-password");
     return res.status(200).json(admins);
   } catch (error) {
     console.error(`Error in [getAllAdmins] controller: ${error.message}`);
