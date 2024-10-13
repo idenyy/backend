@@ -148,24 +148,18 @@ export const logout = async (req, res) => {
 };
 
 export const authCheck = async (req, res) => {
-  // console.log("Request Headers: ", req.headers);
   try {
     const admin = await Admin.findById(req.user.userId).select("-password");
-
     if (admin) {
       const token = generateToken(admin._id, res);
-
       return res.status(200).json({ token, admin: admin });
     }
 
     const user = await User.findById(req.user.userId).select("-password");
-
-    console.log(req.user);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
+    if (!user) return res.status(404).json({ error: "User not found" });
 
     const token = generateToken(user._id, res);
+
     return res.status(200).json({ token, user });
   } catch (error) {
     console.error(`Error in [authCheck] controller: ${error.message}`);
