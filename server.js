@@ -23,6 +23,7 @@ app.use(
       "http://localhost:3000",
       "https://tattoo-shop-801cb78430a8.herokuapp.com",
       "https://k3nxxx.github.io/react-tattoo-store/",
+      "https://k3nxxx.github.io",
     ],
     credentials: true,
   }),
