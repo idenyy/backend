@@ -4,7 +4,10 @@ import Admin from "../models/admin.model.js";
 
 export const protect = async (req, res, next) => {
   try {
-    const token = req.cookies.token;
+    const token =
+      req.cookies.jwt ||
+      (req.headers.authorization || "").replace(/Bearer\s?/, "");
+
     if (!token)
       return res.status(401).json({ error: "Unauthorized: No token provided" });
 
