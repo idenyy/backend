@@ -5,16 +5,16 @@ import {
   updateProfile,
   addFavoriteProduct,
   removeFavoriteProduct,
+  deleteProfile,
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
 
-router.get("/profile/:id", protect, getProfile);
-
+router.get("/:id", protect, getProfile);
 router.put("/:id", protect, updateProfile);
+router.delete("/", protect, deleteProfile);
 
 router.post("/favorites/add", protect, addFavoriteProduct);
-
 router.delete("/favorites/remove", protect, removeFavoriteProduct);
 
 export default router;
