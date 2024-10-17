@@ -16,6 +16,13 @@ export const createAdmin = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    const admin = await Admin.findOne(email);
+
+    if (admin)
+      return res
+        .status(400)
+        .json({ message: "Електронна пошта вже використовується" });
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const newAdmin = new Admin({
       email,

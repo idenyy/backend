@@ -18,7 +18,7 @@ export const signup = async (req, res) => {
 
     if (user)
       return res.status(400).json({
-        error: "Електронна пошта або номер телефону вже використовуєть!",
+        error: "Електронна пошта або номер телефону вже використовується",
       });
 
     if (password.length < 8)
