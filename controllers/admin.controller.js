@@ -13,10 +13,10 @@ export const getAllAdmins = async (req, res) => {
 };
 
 export const createAdmin = async (req, res) => {
-  const { email, password } = req.body;
-
   try {
-    const admin = await Admin.findOne(email);
+    const { email, password } = req.body;
+
+    const admin = await Admin.findOne({ email });
 
     if (admin)
       return res
