@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRoute);
 app.use("/user", userRoute);
-app.use("/admin", adminRoute);
+app.use("/admin-dashboard", adminRoute);
 app.use("/products", productRoute);
 
 app.listen(PORT, () => {
