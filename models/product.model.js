@@ -24,6 +24,11 @@ const productSchema = new mongoose.Schema(
       enum: ["profi", "builders", "noobs"],
       default: "profi",
     },
+    rating: {
+      type: Number,
+      enum: [1, 2, 3, 4, 5],
+      default: 0,
+    },
     image: {
       type: String,
       required: true,
