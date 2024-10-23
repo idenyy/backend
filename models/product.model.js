@@ -19,6 +19,11 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    forWho: {
+      type: String,
+      enum: ["profi", "builders", "noobs"],
+      default: "profi",
+    },
     image: {
       type: String,
       required: true,
