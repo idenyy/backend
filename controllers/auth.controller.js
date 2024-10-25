@@ -6,7 +6,7 @@ import Admin from "../models/admin.model.js";
 
 export const signup = async (req, res) => {
   try {
-    const { name, surname, email, phone_number, password, role } = req.body;
+    const { name, surname, email, phone_number, password } = req.body;
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email))
@@ -35,7 +35,6 @@ export const signup = async (req, res) => {
       email,
       phone_number,
       password: hashedPassword,
-      role,
     });
 
     if (newUser) {
@@ -50,6 +49,8 @@ export const signup = async (req, res) => {
         email: newUser.email,
         phone_number: newUser.phone_number,
         role: newUser.role,
+        cart: newUser.cart,
+        favorites: newUser.favorites,
       });
     } else {
       res.status(400).json({ error: "Invalid user data" });
@@ -117,6 +118,8 @@ export const login = async (req, res) => {
         email: user.email,
         phone_number: user.phone_number,
         role: user.role,
+        cart: user.cart,
+        favorites: user.favorites,
       });
     }
 
