@@ -9,18 +9,17 @@ import {
   getProductById,
   updateProduct,
   deleteProduct,
+  getProductByQuery,
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
 
 router.post("/", protect, protectAdmin, createProduct);
-
 router.put("/:id", protect, protectAdmin, updateProduct);
-
 router.delete("/:id", protect, protectAdmin, deleteProduct);
 
+router.get("/", getProductByQuery);
 router.get("/", getAllProducts);
-
 router.get("/:id", getProductById);
 
 export default router;

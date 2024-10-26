@@ -95,3 +95,28 @@ export const getProductById = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+export const getProductByQuery = async (req, res) => {
+  const { trend } = req.query;
+
+  const validTrends = ["new", "hits", "popular"];
+  if (trend && !validTrends.includes(trend)) {
+    return res.status(400).json({
+      message: "Invalid trend value. Allowed values are: new, hits, popular.",
+    });
+  }
+
+  try {
+    const query = trend ? { trending: trend } : {};
+    const products = await Product.find(query);
+
+    if (products.length === 0) {
+      return res.status(404).json({ message: "No products found" });
+    }
+
+    return res.status(200).json(products);
+  } catch (error) {
+    console.error(`Error in [getProductByQuery] controller: ${error.message}`);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
