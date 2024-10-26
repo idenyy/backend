@@ -24,6 +24,11 @@ const productSchema = new mongoose.Schema(
       enum: ["profi", "builders", "noobs"],
       default: "profi",
     },
+    trending: {
+      type: String,
+      enum: ["new", "hits", "popular"],
+      default: "new",
+    },
     rating: {
       type: Number,
       enum: [0, 1, 2, 3, 4, 5],

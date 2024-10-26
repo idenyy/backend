@@ -1,8 +1,16 @@
 import Product from "../models/product.model.js";
 
 export const createProduct = async (req, res) => {
-  const { name, description, price, category, forWho, rating, image } =
-    req.body;
+  const {
+    name,
+    description,
+    price,
+    category,
+    forWho,
+    trending,
+    rating,
+    image,
+  } = req.body;
 
   try {
     const newProduct = new Product({
@@ -11,6 +19,7 @@ export const createProduct = async (req, res) => {
       price,
       category,
       forWho,
+      trending,
       rating,
       image,
     });
@@ -76,6 +85,7 @@ export const getProductById = async (req, res) => {
 
   try {
     const product = await Product.findById(id);
+
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
