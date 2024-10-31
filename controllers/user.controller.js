@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
+import Product from "../models/product.model.js";
 
 export const getProfile = async (req, res) => {
   const { userId } = req.params;
