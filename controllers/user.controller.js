@@ -85,7 +85,7 @@ export const deleteProfile = async (req, res) => {
 
 export const addFavoriteProduct = async (req, res) => {
   const userId = req.user._id;
-  const { productId } = req.params;
+  const { productId } = req.body;
 
   try {
     const user = await User.findById(userId);
