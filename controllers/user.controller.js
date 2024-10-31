@@ -115,11 +115,17 @@ export const addFavoriteProduct = async (req, res) => {
 
 export const removeFavoriteProduct = async (req, res) => {
   const userId = req.user._id;
-  const { productId } = req.params;
+  const { productId } = req.body;
 
   try {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (!user.favorites.includes(productId)) {
+      return res
+        .status(404)
+        .json({ message: "Product not found in favorites" });
+    }
 
     user.favorites = user.favorites.filter(
       (favProductId) => favProductId !== productId,
