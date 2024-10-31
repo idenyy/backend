@@ -88,11 +88,16 @@ export const addFavoriteProduct = async (req, res) => {
   const { productId } = req.body;
 
   try {
+    console.log("User: ", userId);
+    console.log("Product: ", productId);
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const product = await Product.findById(productId);
-    if (!product) return res.status(404).json({ message: "Product not found" });
+    if (!product)
+      return res
+        .status(404)
+        .json({ message: "Product not found: ", productId });
 
     if (user.favorites.includes(productId)) {
       return res.status(400).json({ message: "Product already in favorites" });
