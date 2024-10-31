@@ -115,7 +115,7 @@ export const addFavoriteProduct = async (req, res) => {
 
 export const removeFavoriteProduct = async (req, res) => {
   const userId = req.user._id;
-  const { productId } = req.query;
+  const { productId } = req.body;
 
   try {
     const user = await User.findById(userId);
