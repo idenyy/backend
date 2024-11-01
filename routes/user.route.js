@@ -15,6 +15,6 @@ router.put("/:id", protect, updateProfile);
 router.delete("/", protect, deleteProfile);
 
 router.post("/favorites/add", protect, addFavoriteProduct);
-router.delete("/favorites/remove", protect, removeFavoriteProduct);
+router.delete("/favorites/:id", protect, removeFavoriteProduct);
 
 export default router;

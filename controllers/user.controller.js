@@ -88,16 +88,15 @@ export const addFavoriteProduct = async (req, res) => {
   const { productId } = req.body;
 
   try {
-    console.log("User: ", userId);
-    console.log("Product: ", productId);
     const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    const product = await Product.findById(productId);
-    if (!product)
-      return res
-        .status(404)
-        .json({ message: "Product not found: ", productId });
+    const productExists = await Product.exists({ _id: productId });
+    if (!productExists) {
+      return res.status(404).json({ message: "Product not found", productId });
+    }
 
     if (user.favorites.includes(productId)) {
       return res.status(400).json({ message: "Product already in favorites" });
@@ -106,38 +105,44 @@ export const addFavoriteProduct = async (req, res) => {
     user.favorites.push(productId);
     await user.save();
 
-    return res.status(200).json({ message: "Product added to favorites" });
+    return res
+      .status(200)
+      .json({ message: "Product added to favorites", productId });
   } catch (error) {
     console.error(`Error in [addFavoriteProduct] controller: ${error.message}`);
-    res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 export const removeFavoriteProduct = async (req, res) => {
   const userId = req.user._id;
-  const { productId } = req.body;
+  const { productId } = req.params;
 
   try {
     const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     if (!user.favorites.includes(productId)) {
       return res
-        .status(404)
-        .json({ message: "Product not found in favorites" });
+        .status(400)
+        .json({ message: "Product not in favorites", productId });
     }
 
     user.favorites = user.favorites.filter(
-      (favProductId) => favProductId !== productId,
+      (favProductId) => favProductId.toString() !== productId,
     );
 
     await user.save();
 
-    return res.status(200).json({ message: "Product removed from favorites" });
+    return res
+      .status(200)
+      .json({ message: "Product removed from favorites", productId });
   } catch (error) {
     console.error(
-      `Error in [removeFavoriteProduct] controller: ${error.message}`,
+      `Error in [deleteFavoriteProduct] controller: ${error.message}`,
     );
-    res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
