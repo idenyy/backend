@@ -124,6 +124,9 @@ export const removeFavoriteProduct = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    console.log("User favorites:", user.favorites);
+    console.log("Product ID to remove:", productId);
+
     if (!user.favorites.map((arr) => arr.toString()).includes(productId)) {
       return res
         .status(400)
