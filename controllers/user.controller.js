@@ -4,9 +4,16 @@ import Product from "../models/product.model.js";
 
 export const getProfile = async (req, res) => {
   const { userId } = req.params;
+  const authenticatedUserId = req.user._id;
 
   try {
-    const user = await User.findOne({ userId }).select("-password");
+    if (userId !== authenticatedUserId.toString()) {
+      return res
+        .status(403)
+        .json({ message: "Forbidden: You can only access your own profile." });
+    }
+
+    let user = await User.findById(userId).select("-password");
     if (!user) return res.status(404).json({ message: "User not found" });
 
     return res.status(200).json(user);
@@ -80,6 +87,30 @@ export const deleteProfile = async (req, res) => {
   } catch (error) {
     console.error(`Error in [deleteProfile] controller: ${error.message}`);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const getFavorites = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.favorites.length === 0) {
+      return res.status(404).json({ message: "No favorite products found" });
+    }
+
+    const favoriteProducts = await Product.find({
+      _id: { $in: user.favorites },
+    });
+
+    return res.status(200).json(favoriteProducts);
+  } catch (error) {
+    console.error(`Error in [getFavorites] controller: ${error.message}`);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
