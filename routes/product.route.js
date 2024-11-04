@@ -20,7 +20,7 @@ import {
 const router = express.Router();
 
 router.get("/", getAllProducts);
-router.get("/", getProductByQuery);
+router.get("/sort", getProductByQuery);
 router.get("/:id", getProductById);
 
 router.get('/rating/:productId', getProductRating);
