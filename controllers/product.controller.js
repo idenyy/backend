@@ -97,7 +97,7 @@ export const getProductById = async (req, res) => {
 };
 
 export const getProductByQuery = async (req, res) => {
-  const { trend } = req.query;
+  const { trend, category, forWho } = req.query;
 
   const validTrends = ["new", "hits", "popular"];
   if (trend && !validTrends.includes(trend)) {
@@ -106,8 +106,22 @@ export const getProductByQuery = async (req, res) => {
     });
   }
 
+  const validCategory = ["equipment", "holders", "sets"];
+  if (category && !validCategory.includes(category)) {
+    return res.status(400).json({
+      message: "Invalid category value. Allowed values are: equipment, holders, sets.",
+    });
+  }
+
+  const validForWho = ["profi", "builders", "noobs"];
+  if (forWho && !validForWho.includes(forWho)) {
+    return res.status(400).json({
+      message: "Invalid value. Allowed values are: profi, builders, noobs.",
+    });
+  }
+
   try {
-    const query = trend ? { trending: trend } : {};
+    const query = trend ? { trending: trend } : category ? { category: category } : forWho ? {forWho: forWho} : {};
     const products = await Product.find(query);
 
     if (products.length === 0) {
