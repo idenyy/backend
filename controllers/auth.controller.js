@@ -51,6 +51,7 @@ export const signup = async (req, res) => {
         role: newUser.role,
         cart: newUser.cart,
         favorites: newUser.favorites,
+        orders: newUser.orders,
       });
     } else {
       res.status(400).json({ error: "Invalid user data" });
@@ -120,6 +121,7 @@ export const login = async (req, res) => {
         role: user.role,
         cart: user.cart,
         favorites: user.favorites,
+        orders: user.orders,
       });
     }
 

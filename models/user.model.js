@@ -1,5 +1,35 @@
 import mongoose from "mongoose";
 
+const cartItemSchema = new mongoose.Schema({
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+    min: 1,
+  },
+});
+
+const orderSchema = new mongoose.Schema({
+  items: [cartItemSchema],
+  totalAmount: {
+    type: Number,
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["pending", "shipped", "delivered", "canceled"],
+    default: "pending",
+  },
+  orderDate: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -30,26 +60,14 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
-    cart: [
-      {
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
-          required: true,
-        },
-        quantity: {
-          type: Number,
-          required: true,
-          min: 1,
-        },
-      },
-    ],
+    cart: [cartItemSchema],
     favorites: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
       },
     ],
+    orders: [orderSchema],
   },
   { timestamps: true },
 );
