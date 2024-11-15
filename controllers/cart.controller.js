@@ -1,4 +1,6 @@
 import User from "../models/user.model.js";
+import Product from "../models/product.model.js";
+import mongoose from "mongoose";
 
 export const addToCart = async (req, res) => {
   try {
@@ -6,22 +8,24 @@ export const addToCart = async (req, res) => {
     const { productId, quantity } = req.body;
 
     const user = await User.findById(userId);
+    const product = await Product.findById(productId);
 
-    console.log(userId);
-    console.log(user);
+    if (!product) {
+      return res.status(404).json({ message: "Product Not Found." });
+    }
 
     const cartItem = user.cart.find(
       (item) => item.product.toString() === productId,
     );
 
-    if (cartItem) {
-      cartItem.quantity += quantity;
-    } else {
+    if (!cartItem) {
       user.cart.push({ product: productId, quantity });
+    } else {
+      cartItem.quantity += quantity;
     }
 
     await user.save();
-    res.json({ message: "Product added to cart.", cart: user.cart });
+    res.json({ message: "Product Added to Cart.", cart: user.cart });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -54,9 +58,8 @@ export const placeOrder = async (req, res) => {
       0,
     );
 
-    console.log(user);
-
     const order = {
+      id: new mongoose.Types.ObjectId(),
       items: user.cart,
       totalAmount,
       status: "pending",

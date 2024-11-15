@@ -8,8 +8,8 @@ const cartItemSchema = new mongoose.Schema({
   },
   quantity: {
     type: Number,
-    required: true,
     min: 1,
+    required: true,
   },
 });
 
@@ -36,37 +36,45 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
     surname: {
       type: String,
       required: true,
     },
+
     email: {
       type: String,
       required: true,
       unique: true,
     },
+
     phone_number: {
       type: String,
       required: true,
       unique: true,
     },
+
     password: {
       type: String,
       required: true,
       minLength: 8,
     },
+
     role: {
       type: String,
       enum: ["user", "admin"],
       default: "user",
     },
+
     cart: [cartItemSchema],
+
     favorites: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
       },
     ],
+
     orders: [orderSchema],
   },
   { timestamps: true },
