@@ -58,18 +58,24 @@ export const placeOrder = async (req, res) => {
       0,
     );
 
+    const orderItems = user.cart.map((item) => ({
+      product: item.product,
+      quantity: item.quantity,
+    }));
+
     const order = {
       id: new mongoose.Types.ObjectId(),
-      items: user.cart,
+      items: orderItems,
       totalAmount,
       status: "pending",
+      orderDate: new Date(),
     };
 
     user.orders.push(order);
     user.cart = [];
     await user.save();
 
-    res.json({ message: "Order placed successfully", order });
+    res.json({ message: "Order Placed Successfully.", order });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
