@@ -15,11 +15,11 @@ export const addToCart = async (req, res) => {
     }
 
     const cartItem = user.cart.find(
-      (item) => item.product.toString() === productId,
+      (item) => item.product._id.toString() === productId,
     );
 
     if (!cartItem) {
-      user.cart.push({ product: productId, quantity });
+      user.cart.push({ product: product, quantity });
     } else {
       cartItem.quantity += quantity;
     }
@@ -59,7 +59,7 @@ export const placeOrder = async (req, res) => {
     );
 
     const orderItems = user.cart.map((item) => ({
-      product: item.product,
+      product: item.product.toObject(),
       quantity: item.quantity,
     }));
 
@@ -75,7 +75,7 @@ export const placeOrder = async (req, res) => {
     user.cart = [];
     await user.save();
 
-    res.json({ message: "Order Placed Successfully.", order });
+    res.json({ message: "Order placed successfully", order });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
