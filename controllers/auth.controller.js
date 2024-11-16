@@ -23,8 +23,8 @@ export const signup = async (req, res) => {
 
     if (password.length < 8)
       return res
-        .status(400)
-        .json({ error: "Пароль має бути не менше 8 символів!" });
+          .status(400)
+          .json({ error: "Пароль має бути не менше 8 символів!" });
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -51,6 +51,7 @@ export const signup = async (req, res) => {
         role: newUser.role,
         cart: newUser.cart,
         favorites: newUser.favorites,
+        orders: newUser.orders,
       });
     } else {
       res.status(400).json({ error: "Invalid user data" });
@@ -101,11 +102,11 @@ export const login = async (req, res) => {
     const admin = await Admin.findOne({ email });
 
     const isUserPasswordCorrect = user
-      ? await bcrypt.compare(password, user.password)
-      : false;
+        ? await bcrypt.compare(password, user.password)
+        : false;
     const isAdminPasswordCorrect = admin
-      ? await bcrypt.compare(password, admin.password)
-      : false;
+        ? await bcrypt.compare(password, admin.password)
+        : false;
 
     if (user && isUserPasswordCorrect) {
       const token = generateToken(user._id, res);
@@ -120,6 +121,7 @@ export const login = async (req, res) => {
         role: user.role,
         cart: user.cart,
         favorites: user.favorites,
+        orders: user.orders,
       });
     }
 
