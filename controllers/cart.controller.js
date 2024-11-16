@@ -37,8 +37,13 @@ export const removeFromCart = async (req, res) => {
     const { productId } = req.params;
 
     const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User Not Found." });
+    }
+
     user.cart = user.cart.filter(
-      (item) => item.product.toString() !== productId,
+        (item) => item.product._id.toString() !== productId,
     );
 
     await user.save();
