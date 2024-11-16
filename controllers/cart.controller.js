@@ -48,6 +48,26 @@ export const removeFromCart = async (req, res) => {
   }
 };
 
+export const getCart = async (req, res) => {
+  try {
+    const { _id: userId } = req.user;
+    const user = await User.findById(userId).populate("cart.product");
+
+    if (!user) {
+      return res.status(404).json({ message: "User Not Found." });
+    }
+
+    const cartItems = user.cart.map((item) => ({
+      product: item.product,
+      quantity: item.quantity,
+    }));
+
+    res.json({ cart: cartItems });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const placeOrder = async (req, res) => {
   try {
     const { _id: userId } = req.user;
