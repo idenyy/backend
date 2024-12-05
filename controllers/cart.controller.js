@@ -107,23 +107,26 @@ export const getCart = async (req, res) => {
 
 export const placeOrder = async (req, res) => {
   const { _id: userId } = req.user;
-  const { id, name, price, count, image } = req.body;
+  const { items } = req.body;
+
+  if (!Array.isArray(items) || items.length === 0)
+    return res
+      .status(400)
+      .json({ error: "Missing required fields or items array is empty" });
+
+  for (let item of items) {
+    if (!item.id || !item.name || !item.price || !item.count || !item.image)
+      return res.status(400).json({ error: "Missing fields in item" });
+  }
 
   try {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: "User Not Found" });
 
-    const orderItem = {
-      id,
-      name,
-      price,
-      count,
-      image,
+    const newOrder = {
+      items: items,
     };
 
-    const newOrder = {
-      items: [orderItem],
-    };
     user.orders.push(newOrder);
     await user.save();
 
