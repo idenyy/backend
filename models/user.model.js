@@ -13,11 +13,32 @@ const cartItemSchema = new mongoose.Schema({
 });
 
 const orderSchema = new mongoose.Schema({
-  items: [cartItemSchema],
-  totalAmount: {
-    type: Number,
-    required: true,
-  },
+  items: [
+      {
+          id: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: 'Product',
+          },
+          name: {
+              type: String,
+              required: true,
+          },
+          price: {
+              type: Number,
+              required: true,
+              min: 0,
+          },
+          count: {
+              type: Number,
+              required: true,
+              min: 1,
+          },
+          image: {
+              type: String,
+              required: true,
+          },
+      },
+  ],
   status: {
     type: String,
     enum: ["pending", "shipped", "delivered", "canceled"],

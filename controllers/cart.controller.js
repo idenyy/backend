@@ -1,6 +1,5 @@
-import User from "../models/user.model.js";
-import Product from "../models/product.model.js";
-import mongoose from "mongoose";
+import User from '../models/user.model.js';
+import Product from '../models/product.model.js';
 
 export const addToCart = async (req, res) => {
   try {
@@ -11,12 +10,10 @@ export const addToCart = async (req, res) => {
     const product = await Product.findById(productId);
 
     if (!product) {
-      return res.status(404).json({ message: "Product Not Found." });
+      return res.status(404).json({ message: 'Product Not Found.' });
     }
 
-    const cartItem = user.cart.find(
-      (item) => item.product._id.toString() === productId,
-    );
+    const cartItem = user.cart.find((item) => item.product._id.toString() === productId);
 
     if (!cartItem) {
       user.cart.push({ product: product, quantity });
@@ -25,7 +22,7 @@ export const addToCart = async (req, res) => {
     }
 
     await user.save();
-    res.json({ message: "Product Added to Cart.", cart: user.cart });
+    res.json({ message: 'Product Added to Cart.', cart: user.cart });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -39,15 +36,13 @@ export const removeFromCart = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: "User Not Found." });
+      return res.status(404).json({ message: 'User Not Found.' });
     }
 
-    user.cart = user.cart.filter(
-        (item) => item.product._id.toString() !== productId,
-    );
+    user.cart = user.cart.filter((item) => item.product._id.toString() !== productId);
 
     await user.save();
-    res.json({ message: "Product removed from cart.", cart: user.cart });
+    res.json({ message: 'Product removed from cart.', cart: user.cart });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -56,15 +51,15 @@ export const removeFromCart = async (req, res) => {
 export const getCart = async (req, res) => {
   try {
     const { _id: userId } = req.user;
-    const user = await User.findById(userId).populate("cart.product");
+    const user = await User.findById(userId).populate('cart.product');
 
     if (!user) {
-      return res.status(404).json({ message: "User Not Found." });
+      return res.status(404).json({ message: 'User Not Found.' });
     }
 
     const cartItems = user.cart.map((item) => ({
       product: item.product,
-      quantity: item.quantity,
+      quantity: item.quantity
     }));
 
     res.json({ cart: cartItems });
@@ -73,35 +68,66 @@ export const getCart = async (req, res) => {
   }
 };
 
+// export const placeOrder1 = async (req, res) => {
+//   try {
+//     const { _id: userId } = req.user;
+//
+//     const user = await User.findById(userId).populate("cart.product");
+//     const totalAmount = user.cart.reduce(
+//       (sum, item) => sum + item.product.price * item.quantity,
+//       0,
+//     );
+//
+//     const orderItems = user.cart.map((item) => ({
+//       product: item.product.toObject(),
+//       quantity: item.quantity,
+//     }));
+//
+//     const order = {
+//       id: new mongoose.Types.ObjectId(),
+//       items: orderItems,
+//       totalAmount,
+//       status: "pending",
+//       orderDate: new Date(),
+//     };
+//
+//     user.orders.push(order);
+//     user.cart = [];
+//     await user.save();
+//
+//     res.json({ message: "Order placed successfully", order });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
 export const placeOrder = async (req, res) => {
+  const { _id: userId } = req.user;
+  const { id, name, price, count, image } = req.body;
+
+  if (!id || !name || !price || !count || !image) return res.status(400).json({ error: 'Invalid input data' });
+
   try {
-    const { _id: userId } = req.user;
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: 'User Not Found' });
 
-    const user = await User.findById(userId).populate("cart.product");
-    const totalAmount = user.cart.reduce(
-      (sum, item) => sum + item.product.price * item.quantity,
-      0,
-    );
-
-    const orderItems = user.cart.map((item) => ({
-      product: item.product.toObject(),
-      quantity: item.quantity,
-    }));
-
-    const order = {
-      id: new mongoose.Types.ObjectId(),
-      items: orderItems,
-      totalAmount,
-      status: "pending",
-      orderDate: new Date(),
+    const orderItem = {
+      id,
+      name,
+      price,
+      count,
+      image
     };
 
-    user.orders.push(order);
-    user.cart = [];
+    const newOrder = {
+      items: [orderItem]
+    };
+    user.orders.push(newOrder);
     await user.save();
 
-    res.json({ message: "Order placed successfully", order });
+    res.status(201).json({ message: 'Order placed successfully', order: newOrder });
   } catch (error) {
     res.status(500).json({ message: error.message });
+    console.error('Error in place order: ', error);
   }
 };

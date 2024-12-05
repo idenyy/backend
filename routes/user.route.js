@@ -29,6 +29,6 @@ router.delete("/favorites/:productId", protect, removeFavoriteProduct);
 router.get('/cart/get', protect, getCart)
 router.post("/cart/add", protect, addToCart);
 router.delete("/cart/:productId", protect, removeFromCart);
-router.post("/order/place", protect, placeOrder);
+router.post("/orders", protect, placeOrder);
 
 export default router;
