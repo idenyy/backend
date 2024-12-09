@@ -1,13 +1,13 @@
-import express from "express";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
-import cors from "cors";
+import express from 'express';
+import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
-import connectMongoDB from "./db/connectMongoDB.js";
-import authRoute from "./routes/auth.route.js";
-import userRoute from "./routes/user.route.js";
-import adminRoute from "./routes/admin.route.js";
-import productRoute from "./routes/product.route.js";
+import connectMongoDB from './db/connectMongoDB.js';
+import authRoute from './routes/auth.route.js';
+import userRoute from './routes/user.route.js';
+import adminRoute from './routes/admin.route.js';
+import productRoute from './routes/product.route.js';
 
 dotenv.config();
 
@@ -20,23 +20,24 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
-      "https://tattoo-shop-801cb78430a8.herokuapp.com",
-      "https://k3nxxx.github.io/react-tattoo-store/",
-      "https://k3nxxx.github.io",
+      'http://localhost:3000',
+      'https://tattoo-shop-801cb78430a8.herokuapp.com',
+      'https://k3nxxx.github.io/react-tattoo-store/',
+      'https://k3nxxx.github.io',
+      'https://react-tattoo-store.vercel.app'
     ],
-    credentials: true,
-  }),
+    credentials: true
+  })
 );
 
-app.get("/", (req, res) => {
-  res.send("Server is working...");
+app.get('/', (req, res) => {
+  res.send('Server is working...');
 });
 
-app.use("/auth", authRoute);
-app.use("/user", userRoute);
-app.use("/admin-dashboard", adminRoute);
-app.use("/products", productRoute);
+app.use('/auth', authRoute);
+app.use('/user', userRoute);
+app.use('/admin-dashboard', adminRoute);
+app.use('/products', productRoute);
 
 app.listen(PORT, () => {
   connectMongoDB();
